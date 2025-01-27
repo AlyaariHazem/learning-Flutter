@@ -1,11 +1,12 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/loginFrom.dart';
+import 'package:flutter_application_1/screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-/// The main app widget demonstrating a modern, stylish login form.
+/// The main app widget for MySchool App.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -15,10 +16,10 @@ class MyApp extends StatelessWidget {
       title: 'MySchool App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blueAccent, // Customize your primary color here
+          seedColor: Colors.blueAccent, // Customize primary color here.
         ),
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white, // Fallback if gradient not used
+        scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
           elevation: 0,
           centerTitle: true,
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginForm(),
+      home: const LoginScreen(),
     );
   }
 }

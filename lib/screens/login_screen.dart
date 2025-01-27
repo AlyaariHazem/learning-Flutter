@@ -1,15 +1,15 @@
-// lib/loginForm.dart
+// lib/LoginScreen.dart
 import 'package:flutter/material.dart';
-import 'dashboard.dart';
+import 'package:flutter_application_1/screens/home_screen.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginScreenState extends State<LoginScreen> {
   // Controllers to get text input from the user.
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -23,7 +23,7 @@ class _LoginFormState extends State<LoginForm> {
       // If the credentials are correct, navigate to the Dashboard.
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Dashboard()),
+        MaterialPageRoute(builder: (context) =>  HomeScreen()),
       );
     } else {
       // If credentials are invalid, show a snackbar with an error message.
@@ -54,8 +54,8 @@ class _LoginFormState extends State<LoginForm> {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 97, 233, 110), // First color
-                  Color.fromARGB(255, 97, 181, 136), // Second color
+                  Color.fromARGB(255, 237, 255, 239), // First color
+                  Color.fromARGB(255, 243, 255, 249), // Second color
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
