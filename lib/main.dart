@@ -1,37 +1,47 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_application_1/screens/announcements_screen.dart';
+import 'package:flutter_application_1/screens/attendance_screen.dart';
+import 'package:flutter_application_1/screens/gallery_screen.dart';
+import 'package:flutter_application_1/screens/home_screen.dart';
 import 'package:flutter_application_1/screens/login_screen.dart';
+import 'package:flutter_application_1/screens/students_screen.dart';
+import 'package:flutter_application_1/screens/settings_screen.dart';
+import 'package:flutter_application_1/providers/theme_provider.dart'; // Import ThemeProvider
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const TeacherDashboardApp(),
+    ),
+  );
 }
 
-/// The main app widget for MySchool App.
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TeacherDashboardApp extends StatelessWidget {
+  const TeacherDashboardApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MySchool App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blueAccent, // Customize primary color here.
-        ),
-        useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.white),
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      home: const LoginScreen(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Teacher Dashboard',
+          theme: themeProvider.themeData, // Use dynamic theme
+          initialRoute: '/login',
+          routes: {
+            '/login': (context) => const LoginScreen(),
+            '/home': (context) => const HomeScreen(),
+            '/attendance': (context) => const AttendanceScreen(),
+            '/announcements': (context) => const AnnouncementsScreen(),
+            '/gallery': (context) => const GalleryScreen(),
+            '/students': (context) => StudentsScreen(),
+            '/settings': (context) => const SettingsScreen(),
+          },
+        );
+      },
     );
   }
 }
+
+

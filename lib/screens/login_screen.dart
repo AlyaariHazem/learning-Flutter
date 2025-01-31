@@ -1,6 +1,7 @@
-// lib/LoginScreen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/home_screen.dart';
+import 'package:flutter_application_1/services/api_service.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,32 +14,56 @@ class _LoginScreenState extends State<LoginScreen> {
   // Controllers to get text input from the user.
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  late AuthService _authService;
+  bool _isLoading = false;
 
-  // Simple login function to validate the username and password.
-  void _handleLogin() {
+  @override
+  void initState() {
+    super.initState();
+    _authService = AuthService(
+        apiService: ApiService(baseUrl: 'https://localhost:7258'));
+  }
+
+  void _handleLogin() async {
     final username = _usernameController.text.trim();
-    final password = _passwordController.text;
+    final password = _passwordController.text.trim();
 
-    if (username == 'admin' && password == '123') {
-      // If the credentials are correct, navigate to the Dashboard.
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) =>  HomeScreen()),
-      );
-    } else {
-      // If credentials are invalid, show a snackbar with an error message.
+    if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid username or password'),
-          duration: Duration(seconds: 2),
-        ),
+        const SnackBar(content: Text('Please enter username and password')),
       );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    bool success = await _authService.login(username, password);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      if (success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid username or password'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
   @override
   void dispose() {
-    // Dispose of the controllers when the widget is removed.
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -49,20 +74,18 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 237, 255, 239), // First color
-                  Color.fromARGB(255, 243, 255, 249), // Second color
+                  Color.fromARGB(255, 237, 255, 239),
+                  Color.fromARGB(255, 243, 255, 249),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
           ),
-          // Center content scrollable
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -112,28 +135,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {
-                            // Implement your "Forgot Password" logic here.
-                          },
+                          onPressed: () {},
                           child: const Text('Forgot Password?'),
                         ),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: _handleLogin,
+                        onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          backgroundColor: Theme.of(context)
-                              .colorScheme
-                              .primary, // Ensure good contrast with text
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
                         ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text('Login',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white)),
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -141,9 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           const Text("Don't have an account?"),
                           TextButton(
-                            onPressed: () {
-                              // Handle sign up or registration logic here.
-                            },
+                            onPressed: () {},
                             child: const Text('Sign Up'),
                           ),
                         ],
